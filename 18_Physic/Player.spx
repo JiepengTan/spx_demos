@@ -17,7 +17,7 @@ const (
 )
 
 const (
-	SPEED         = float64(500)//100
+	SPEED         = float64(100)//100
 	JUMP_VELOCITY = float64(450.0)
 	PLAYER_MODE   = int64(1)
 	GRAVITY       = float64(-980)
@@ -28,7 +28,7 @@ const (
 )
 
 
-func  DoDie() {
+func DoDie() {
 	SetPhysicsMode NoPhysic
 	isControlled = true
 	y1 :=  ypos + 25
@@ -81,11 +81,13 @@ func OnUpdate(delta float64) {
 	hasPressedJumpLastFrame = isPressedJump
 
 	dir := 0
-	if keyPressed(KeyRight) {
+	isLeft := keyPressed(KeyLeft) || keyPressed(KeyA)
+	isRight := keyPressed(KeyRight) || keyPressed(KeyD)
+	if isRight {
 		dir = 1
 		setHeading Right
 	}
-	if keyPressed(KeyLeft) {
+	if isLeft {
 		dir = -1
 		setHeading Left
 	}
@@ -96,6 +98,10 @@ func OnUpdate(delta float64) {
 	}
 	SetVelocity(velX,velY)
 	TriggeraAnimation(velX, float64(dir), PlayerMode)
+	if ypos < DEADLINE {
+		gameStatus = FAILED
+		DoDie()
+	}
 }
 
 func getAnimDir() int64 {
@@ -155,7 +161,6 @@ onTouchStart "Goomba", enemy => {
 		return
 	}
 	angleOfCollision := RadToDeg(AngleToPoint(xpos, ypos,enemy.xpos,enemy.ypos))
-	println("angleOfCollision", int(angleOfCollision))
 	if angleOfCollision > minStompDegree && maxStompDegree > angleOfCollision {
 		enemy.Die()
 	} else {

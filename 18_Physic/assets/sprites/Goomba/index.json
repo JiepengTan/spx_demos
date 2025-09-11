@@ -5,66 +5,50 @@
             "y": 0,
             "faceRight": 0,
             "bitmapResolution": 1,
-            "name": "Coin",
-            "path": "Coin.png"
+            "name": "Goomba_Flat",
+            "path": "Goomba_Flat.png"
         },
         {
             "x": 0,
             "y": 0,
             "faceRight": 0,
             "bitmapResolution": 1,
-            "name": "Coin1",
-            "path": "Coin1.png"
+            "name": "Goomba_Walk1",
+            "path": "Goomba_Walk1.png"
         },
         {
             "x": 0,
             "y": 0,
             "faceRight": 0,
             "bitmapResolution": 1,
-            "name": "Coin2",
-            "path": "Coin2.png"
-        },
-        {
-            "x": 0,
-            "y": 0,
-            "faceRight": 0,
-            "bitmapResolution": 1,
-            "name": "Coin3",
-            "path": "Coin3.png"
-        },
-        {
-            "x": 0,
-            "y": 0,
-            "faceRight": 0,
-            "bitmapResolution": 1,
-            "name": "Coin4",
-            "path": "Coin4.png"
+            "name": "Goomba_Walk2",
+            "path": "Goomba_Walk2.png"
         }
-       
     ],
     "fAnimations": {
-        "idle": {
-            "frameFrom": "Coin1",
-            "frameTo": "Coin4",
-            "frameFps": 10,
-            "onStart": {
-                "play": "attack1"
-            },
-            "builder_id": "PTxEyiDiQhhEtACnzkQ_S"
+        "walk": {
+            "frameFrom": "Goomba_Walk1",
+            "frameTo": "Goomba_Walk2",
+            "frameFps": 5
+        },
+        "die": {
+            "frameFrom": "Goomba_Flat",
+            "frameTo": "Goomba_Flat",
+            "frameFps": 2
         }
     },
-    "defaultAnimation": "idle",
+    "defaultAnimation": "walk",
     "costumeIndex": 0,
     "heading": 90,
-    "physicMode": "no",
-    "triggerLayer":8,
-    "triggerMask":1,
-    "collisionLayer":8,
-    "collisionMask":1,
+    "physicMode": "dynamic",
+    "triggerLayer":2,
+    "triggerMask":5,
+    "collisionLayer":2,
+    "collisionMask":5,
     "isDraggable": false,
     "rotationStyle": "normal",
     "size": 1,
-    "visible": false,
+    "visible": true,
     "x": -10000,
     "y": -10000
 }

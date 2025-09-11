@@ -66,6 +66,7 @@
         "Brick",
         "Flag",
         "FlagPole",
+        "Goomba",
         {
             "type": "monitor",
             "name": "Score",

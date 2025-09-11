@@ -7,6 +7,7 @@ var (
 	cooldownTime int
 	gameStatus   EGameStatus
 )
+const DEADLINE = -180
 type EGameStatus= int64
 const (
 	PLAYING EPlayerMode = iota
@@ -56,11 +57,15 @@ func loadSprite2ds(datas *tscnMapData) {
 func loadGameObjs(datas *tscnMapData) {
 	for _, item := range datas.Prefabs {
 		name := item.PrefabPath
+		x,y := item.Position.X,  -item.Position.Y
+		trans := Transform{X:x, Y: y}
 		switch name {
 			case "brick":
-				Brick.clone Transform{X: item.Position.X, Y: -item.Position.Y}
+				Brick.clone trans
 			case "coin":
-				Coin.clone Transform{X: item.Position.X, Y: -item.Position.Y}
+				Coin.clone trans
+			case "goomba":
+				Goomba.clone trans
 		}
 	}
 }
@@ -91,6 +96,9 @@ func MoveToward(from, to, delta float64) float64 { //move_toward
 		return to
 	}
 	return from + float64(Sign(to-from))*delta
+}
+func Signf(x float64) float64 {
+	return float64(Sign(x))
 }
 
 func Sign(x float64) int64 {
