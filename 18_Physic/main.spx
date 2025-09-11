@@ -14,7 +14,8 @@ func loadTilemaps(datas *tscnMapData) {
 		paths[item.ID] = item.TexturePath
 	}
 	for idx, layer := range datas.TileMap.Layers {
-		SetTileMapLayerIndex(int64(idx+1))
+		layerId := int64(idx+1)
+		SetTileMapLayerIndex(layerId)
 		tiles := layer.Tiles
 		sort.Slice (tiles, func(i, j int) bool {
 			return tiles[i].SourceID < tiles[j].SourceID
@@ -29,6 +30,7 @@ func loadTilemaps(datas *tscnMapData) {
 			y,x := tile.WorldCoords.X,tile.WorldCoords.Y
 			PlaceTile(x,-y )
 		}
+		//SetTileMapOffset(layerId, 0, 0)
 		ExitTilemapEditorMode()
 	}
 }
@@ -41,13 +43,10 @@ func loadSprite2ds(datas *tscnMapData) {
 func loadGameObjs(datas *tscnMapData) {
 	for _, item := range datas.Prefabs {
 		name := item.PrefabPath
-		println "prefab : " , name 
 		switch name {
 			case "brick":
-				println "createinstance", "brick",item.Position.X, item.Position.Y
 				Brick.clone Transform{X: item.Position.X, Y: -item.Position.Y}
 			case "coin":
-				println "createinstance", "coin",item.Position.X, item.Position.Y
 				Coin.clone Transform{X: item.Position.X, Y: -item.Position.Y}
 		}
 	}
