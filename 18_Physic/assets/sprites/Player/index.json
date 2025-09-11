@@ -12,11 +12,10 @@
         "y": -32
     },
     "physicMode": "dynamic",
-    "gravity":1,
-    "triggerLayer":2,
-    "triggerMask":1,
-    "collisionLayer":2,
-    "collisionMask":1,
+    "triggerLayer":1,
+    "triggerMask":14,
+    "collisionLayer":1,
+    "collisionMask":14,
     "costumes": [
         {
             "x": 0,
