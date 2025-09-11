@@ -11,7 +11,8 @@ onTouchStart "Player", =>{
         waitNextFrame
     }
     Player.SetPhysicsMode(NoPhysic)
-    dstPos := Player.xpos + 200
+    dstPos := Player.xpos + 120
+    Player.animate "small_run"
     for {
         if( Player.xpos > dstPos){
             break;
@@ -19,4 +20,5 @@ onTouchStart "Player", =>{
         Player.setXpos (Player.xpos + 100 * deltaTime)
         waitNextFrame
     }
+    Player.hide
 }
