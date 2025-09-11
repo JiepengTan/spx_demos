@@ -1,4 +1,7 @@
-import "sort"
+import (
+	"sort"
+	"math"
+)
 var (
 	Score        int
 	cooldownTime int
@@ -50,6 +53,43 @@ func loadGameObjs(datas *tscnMapData) {
 				Coin.clone Transform{X: item.Position.X, Y: -item.Position.Y}
 		}
 	}
+}
+const Math_PI = float64(3.1415926535897932384626433833)
+
+
+func DegToRad(p_y float64) float64 {
+	return p_y * (Math_PI / 180.0)
+}
+
+func RadToDeg(p_y float64) float64 {
+	return p_y * (180.0 / Math_PI)
+}
+func AngleToPoint(x1, y1 float64, x2,y2 float64) float64 {
+	return Angle(y2 -y1, x2 -x1)
+}
+
+func Angle(y,x float64) float64 {
+	return float64(math.Atan2(float64(y), float64(x)))
+}
+
+func Abs(x float64) float64 {
+	return float64(math.Abs(float64(x)))
+}
+
+func MoveToward(from, to, delta float64) float64 { //move_toward
+	if Abs(to-from) <= delta {
+		return to
+	}
+	return from + float64(Sign(to-from))*delta
+}
+
+func Sign(x float64) int64 {
+	if x < 0 {
+		return -1
+	} else if x > 0 {
+		return 1
+	}
+	return 0
 }
 
 onStart => {

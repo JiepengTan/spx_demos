@@ -1,96 +1,161 @@
+
 var (
-	moving bool
-	moveSpeed float64
-	jumpSpeed float64
-	isDrawRect bool
-	drawRadius float64
-	oldsps []Sprite
+	PlayModeAnimName []string
+	curDir 	 int64
+	runSpeedDamping float64
+	PlayerMode      EPlayerMode
+	isControlled    bool
+	hasPressedJumpLastFrame  bool
 )
 
-func onSpritesTouched(sps []Sprite) {
-	if(oldsps != nil){
-		for _, sp := range oldsps {
-			if( sp != nil){
-				sp.setGraphicEffect BrightnessEffect, 0
-			}
+type EPlayerMode = int64
+
+const (
+	SMALL EPlayerMode = iota
+	BIG
+	SHOOTING
+)
+
+const (
+	SPEED         = float64(100)
+	JUMP_VELOCITY = float64(400.0)
+	PLAYER_MODE   = int64(1)
+	GRAVITY       = float64(-980)
+
+	minStompDegree = float64(25)
+	maxStompDegree = float64(155)
+	ShouldSyncCamera = true
+)
+
+
+func  DoDie() {
+	SetPhysicsMode NoPhysic
+	isControlled = true
+	y1 :=  ypos + 25
+	y2 :=  ypos - 500
+	for {
+		if( ypos > y1){
+			break
 		}
+		setYpos(ypos + 75 * deltaTime)
+		waitNextFrame()
 	}
-	oldsps = sps
-	for _, sp := range sps {
-		if( sp != nil){
-			sp.setGraphicEffect BrightnessEffect, 100
+	for {
+		if( ypos < y2){
+			break
+		}
+		setYpos(ypos - 400 * deltaTime)
+		waitNextFrame()
+	}
+	die()
+}
+
+
+
+func OnUpdate(delta float64) {
+	if xpos > Camera.xpos {
+		Camera.SetXYpos(xpos, Camera.ypos)
+	}
+	if isControlled {
+		return
+	}
+	_,_, camSizeX,_ := Camera.ViewportRect()
+	cameraLeftBound := Camera.xpos - float64(camSizeX/2.0)
+	velX, velY := Velocity()
+	if !IsOnFloor() {
+		velY += (GRAVITY * delta)
+	}
+
+	if xpos < cameraLeftBound+8 && velX < 0 {
+		SetVelocity(0,0)
+		return
+	}
+	isPressedJump :=  keyPressed(KeySpace)
+	if isPressedJump && IsOnFloor() {
+		velY = (JUMP_VELOCITY)
+	}
+	isJumpJustReleased := hasPressedJumpLastFrame && !isPressedJump
+	if isJumpJustReleased && velY > 0 {
+		velY = velY * 0.5
+	}
+	hasPressedJumpLastFrame = isPressedJump
+
+	dir := 0
+	if keyPressed(KeyRight) {
+		dir = 1
+		setHeading Left
+	}
+	if keyPressed(KeyLeft) {
+		dir = -1
+		setHeading Right
+	}
+	if dir != 0 {
+		velX = (float64(dir)*SPEED)
+	} else {
+		velX = (MoveToward(velX, 0, SPEED))
+	}
+	SetVelocity(velX,velY)
+	TriggeraAnimation(velX, float64(dir), PlayerMode)
+}
+
+func getAnimDir() int64 {
+	return curDir
+}
+
+func setAnimSign(isRight bool) {
+	dir := int64(1)
+	if !isRight {
+		dir = -1
+	}
+	curDir = dir
+}
+
+func TriggeraAnimation(velX float64, direction float64, playerMode EPlayerMode) {
+	animation_prefix := PlayModeAnimName[int64(playerMode)]
+	if !IsOnFloor() {
+		Animate(animation_prefix + "_jump")
+	} else if Sign(velX) != Sign(direction) && velX != 0 && direction != 0 {
+		Animate(animation_prefix + "_slide")
+		setAnimSign(direction > 0.5)
+	} else {
+		if getAnimDir() != Sign(velX) && Sign(velX) != 0 {
+			setAnimSign(Sign(velX) == 1)
+		}
+		if velX != 0 {
+			Animate(animation_prefix + "_run")
+		} else {
+			Animate(animation_prefix + "_idle")
 		}
 	}
 }
+
+
 
 onStart => {
-	Camera.Follow this
-	for {
-		WaitNextFrame
+	PlayModeAnimName = []string{
+		"small",
+		"big",
+		"shooting",
 	}
-}
-
-onStart =>{
-    forever =>{
-		if moving {
-		    animate "walk"
-		}
-	}
-}
-
-onKey KeyC, => {
-	isDrawRect = !isDrawRect
-}
-
-onKey KeyI, =>{
-	drawRadius +=10
-}
-onKey KeyU, =>{
-	drawRadius -=10
-}
-
-onStart =>{
-	wait 0.3
-	drawRadius = 50
+	curDir = 1
+	runSpeedDamping = 0.5
+	PlayerMode = SMALL
+	isControlled = false
 	for{
-		x , y := mouseX, mouseY
-		if(isDrawRect){
-			debugDrawRect(x, y, drawRadius *2,drawRadius*2, HSB(1,100,100))
-			sps := checkCollision(x, y, drawRadius *2,drawRadius*2)
-			onSpritesTouched(sps)
-		}else{
-			debugDrawCircle(x, y, drawRadius, HSB(50,100,100))
-			sps := checkCollision(x, y, drawRadius)
-			onSpritesTouched(sps)
-		}
-		WaitNextFrame
+		OnUpdate(deltaTime)
+		waitNextFrame
 	}
 }
 
-onStart =>{
-	moveSpeed = 160
-	jumpSpeed := 430.0
-
-	forever =>{
-		moving = false
-		vx, vy := velocity
-		isOnGround := IsOnFloor()
-		if keyPressed (KeyA) {
-			moving = true
-			SetHeading 180
-			SetVelocity(-moveSpeed, vy)
-		}
-		if keyPressed (KeyD) {
-			moving = true
-			SetHeading 0
-			SetVelocity(moveSpeed, vy)
-		}
-		if ( keyPressed (KeyJ)  ||  keyPressed (KeySpace) ) && isOnGround  {
-			moving = true
-			SetVelocity(vx, jumpSpeed)
-		}
-		if(!moving){
-			SetVelocity (0, vy)
-		}
+onTouchStart "Goomba", enemy => {
+	if isControlled {
+		return
+	}
+	angleOfCollision := RadToDeg(AngleToPoint(xpos, ypos,enemy.xpos,enemy.ypos))
+	println("angleOfCollision", int(angleOfCollision))
+	if angleOfCollision > minStompDegree && maxStompDegree > angleOfCollision {
+		enemy.Die()
+	} else {
+		DoDie()
 	}
 }
