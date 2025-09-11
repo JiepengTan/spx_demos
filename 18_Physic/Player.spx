@@ -18,7 +18,7 @@ const (
 
 const (
 	SPEED         = float64(100)
-	JUMP_VELOCITY = float64(400.0)
+	JUMP_VELOCITY = float64(450.0)
 	PLAYER_MODE   = int64(1)
 	GRAVITY       = float64(-980)
 
@@ -83,11 +83,11 @@ func OnUpdate(delta float64) {
 	dir := 0
 	if keyPressed(KeyRight) {
 		dir = 1
-		setHeading Left
+		setHeading Right
 	}
 	if keyPressed(KeyLeft) {
 		dir = -1
-		setHeading Right
+		setHeading Left
 	}
 	if dir != 0 {
 		velX = (float64(dir)*SPEED)

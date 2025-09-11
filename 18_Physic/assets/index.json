@@ -62,8 +62,6 @@
     "globalAirDrag": 1,
     "zorder": [
         "Player",
-        "Platform",
-        "Ground",
         "Coin",
         "Brick",
         {
