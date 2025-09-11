@@ -64,6 +64,8 @@
         "Player",
         "Coin",
         "Brick",
+        "Flag",
+        "FlagPole",
         {
             "type": "monitor",
             "name": "Score",

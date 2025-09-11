@@ -5,12 +5,22 @@ import (
 var (
 	Score        int
 	cooldownTime int
+	gameStatus   EGameStatus
+)
+type EGameStatus= int64
+const (
+	PLAYING EPlayerMode = iota
+	WIN
+	FAILED
 )
 type Transform struct {
 	X float64
 	Y float64
 }
 
+func IsPlaying() bool {
+	return gameStatus == PLAYING
+}
 func loadTilemaps(datas *tscnMapData) {
 	paths := make(map[int]string)
 	for _, item := range datas.TileMap.TileSet.Sources {
@@ -93,6 +103,7 @@ func Sign(x float64) int64 {
 }
 
 onStart => {
+	gameStatus = PLAYING
 	datas := Scene1.Load()
 	loadTilemaps(datas)
 	loadSprite2ds(datas)

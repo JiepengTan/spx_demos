@@ -3,16 +3,21 @@
     {
       "name": "FlagPole",
       "path": "FlagPole.png",
-      "x": 55,
-      "y": 50
+      "x": 8,
+      "y": 160
     }
   ],
-  "costumeIndex": 0,
+  "costumeIndex": 0,    
+  "physicMode": "no",
+  "triggerLayer":8,
+  "triggerMask":1,
+  "collisionLayer":8,
+  "collisionMask":1,
   "heading": 90,
   "isDraggable": false,
   "rotationStyle": "normal",
   "size": 1,
   "visible": true,
-  "x": -59,
-  "y": 2
+  "x": 0, 
+  "y": -64
 }

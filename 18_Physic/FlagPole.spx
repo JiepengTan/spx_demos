@@ -1,0 +1,22 @@
+
+onTouchStart "Player", =>{
+    println "WIn"
+    gameStatus = WIN
+    Player.SetVelocity(0,0)
+    for {
+        if( Flag.ypos < -48){
+            break;
+        }
+        Flag.setYpos (Flag.ypos - 100 * deltaTime)
+        waitNextFrame
+    }
+    Player.SetPhysicsMode(NoPhysic)
+    dstPos := Player.xpos + 200
+    for {
+        if( Player.xpos > dstPos){
+            break;
+        }
+        Player.setXpos (Player.xpos + 100 * deltaTime)
+        waitNextFrame
+    }
+}

@@ -17,7 +17,7 @@ const (
 )
 
 const (
-	SPEED         = float64(100)
+	SPEED         = float64(500)//100
 	JUMP_VELOCITY = float64(450.0)
 	PLAYER_MODE   = int64(1)
 	GRAVITY       = float64(-980)
@@ -142,6 +142,9 @@ onStart => {
 	PlayerMode = SMALL
 	isControlled = false
 	for{
+		if !IsPlaying() {
+			return 
+		}
 		OnUpdate(deltaTime)
 		waitNextFrame
 	}
