@@ -65,6 +65,6 @@
     "rotationStyle": "normal",
     "size": 1,
     "visible": false,
-    "x": 50,
-    "y": 50
+    "x": -10000,
+    "y": -10000
 }

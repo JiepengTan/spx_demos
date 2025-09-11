@@ -3,6 +3,11 @@ var (
 	Score        int
 	cooldownTime int
 )
+type Transform struct {
+	X float64
+	Y float64
+}
+
 func loadTilemaps(datas *tscnMapData) {
 	paths := make(map[int]string)
 	for _, item := range datas.TileMap.TileSet.Sources {
@@ -33,8 +38,24 @@ func loadSprite2ds(datas *tscnMapData) {
 	}
 }
 
+func loadGameObjs(datas *tscnMapData) {
+	for _, item := range datas.Prefabs {
+		name := item.PrefabPath
+		println "prefab : " , name 
+		switch name {
+			case "brick":
+				println "createinstance", "brick",item.Position.X, item.Position.Y
+				Brick.clone Transform{X: item.Position.X, Y: -item.Position.Y}
+			case "coin":
+				println "createinstance", "coin",item.Position.X, item.Position.Y
+				Coin.clone Transform{X: item.Position.X, Y: -item.Position.Y}
+		}
+	}
+}
+
 onStart => {
 	datas := Scene1.Load()
 	loadTilemaps(datas)
 	loadSprite2ds(datas)
+	loadGameObjs(datas)
 }
